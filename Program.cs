@@ -1,7 +1,12 @@
+using AuctionsWebsitePragmatic.BackgroundServices;
 using AuctionsWebsitePragmatic.Data;
 using AuctionsWebsitePragmatic.Repositories;
 using AuctionsWebsitePragmatic.Repositories.Interfaces;
+using AuctionsWebsitePragmatic.Services;
+using AuctionsWebsitePragmatic.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace AuctionsWebsitePragmatic
 {
@@ -22,6 +27,21 @@ namespace AuctionsWebsitePragmatic
             builder.Services.AddScoped<IBidRepository, BidRepository>();
             builder.Services.AddScoped<ITransactionRepository, TransactionRepository>();
 
+            builder.Host.UseSerilog();
+
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IAuctionService, AuctionService>();
+            builder.Services.AddScoped<IBidService, BidService>();
+            builder.Services.AddHostedService<AuctionClosingService>();
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/Login";
+                    options.AccessDeniedPath = "/Account/Login";
+                });
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -37,11 +57,16 @@ namespace AuctionsWebsitePragmatic
 
             app.UseRouting();
 
+            app.UseSerilogRequestLogging();
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.MapDefaultControllerRoute();
 
             app.Run();
         }

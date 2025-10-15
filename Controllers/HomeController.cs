@@ -1,32 +1,37 @@
-using System.Diagnostics;
 using AuctionsWebsitePragmatic.Models;
+using AuctionsWebsitePragmatic.Services.Interfaces;
+using AuctionsWebsitePragmatic.ViewModels.Auction;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace AuctionsWebsitePragmatic.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IAuctionService _auctionService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IAuctionService auctionService)
         {
-            _logger = logger;
+            _auctionService = auctionService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var auctions = await _auctionService.GetActiveAuctionsAsync();
+            var auctionListViewModel = auctions.Select(a => new AuctionListViewModel
+            {
+                Id = a.Id,
+                Title = a.Title,
+                Description = a.Description,
+                StartPrice = a.StartPrice,
+                CurrentPrice = a.CurrentPrice,
+                EndDate = a.EndDate,
+                SellerUsername = a.PostedBy?.Username ?? "Unknown"
+            }).ToList();
+            //return View(auctionListViewModel);
+            return Ok(new { message = "Auctions", auctionListViewModel });
         }
-
-        public IActionResult Privacy()
-        {
-            return View();
-        }
-
-        //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        //public IActionResult Error()
-        //{
-        //    return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        //}
     }
 }

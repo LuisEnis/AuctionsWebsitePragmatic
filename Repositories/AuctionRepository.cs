@@ -35,7 +35,7 @@ namespace AuctionsWebsitePragmatic.Repositories
 
         public async Task<Auction?> GetByIdAsync(int id)
         {
-            return await _context.Auctions.Include(a => a.PostedBy).Include(a => a.Bids).ThenInclude(b => b.User).FirstOrDefaultAsync(a => a.Id == id);
+            return await _context.Auctions.Include(a => a.PostedBy).Include(a => a.Bids).ThenInclude(b => b.Bidder).FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task SaveAsync()
