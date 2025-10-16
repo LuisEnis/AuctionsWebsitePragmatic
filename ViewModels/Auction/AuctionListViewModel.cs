@@ -11,5 +11,6 @@
         public string SellerUsername { get; set; } = string.Empty;
         public double TimeRemainingMinutes => (EndDate - DateTime.UtcNow).TotalMinutes;
         public bool IsActive => EndDate > DateTime.UtcNow;
+        public int PostedById { get; set; }
     }
 }

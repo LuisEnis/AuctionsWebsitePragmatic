@@ -1,0 +1,35 @@
+﻿@model AuctionsWebsitePragmatic.ViewModels.Auction.AuctionDetailsViewModel
+
+@{
+    ViewData["Title"] = "Auction Details";
+}
+
+<div class="container mt-5">
+    <h2>@Model.Title</h2>
+    <p>@Model.Description</p>
+    <p><strong>Current Price:</strong> $@Model.CurrentPrice</p>
+    <p><strong>Seller:</strong> @Model.PostedByUsername</p>
+    <p><strong>Ends On:</strong> @Model.EndDate.ToLocalTime().ToString("g")</p>
+
+    <hr />
+    <h4>Bids</h4>
+
+    @if (Model.Bids == null || !Model.Bids.Any())
+    {
+        <p>No bids yet.</p>
+    }
+    else
+    {
+        <ul class="list-group mb-3">
+            @foreach (var bid in Model.Bids)
+            {
+                <li class="list-group-item d-flex justify-content-between">
+                    <span>Bid: $@bid.Amount</span>
+                    <span>Auction ID: @bid.AuctionId</span>
+                </li>
+            }
+        </ul>
+    }
+
+    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Auctions</a>
+</div>

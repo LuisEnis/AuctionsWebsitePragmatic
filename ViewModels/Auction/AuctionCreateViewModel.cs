@@ -14,6 +14,6 @@ namespace AuctionsWebsitePragmatic.ViewModels.Auction
         public decimal StartPrice { get; set; }
 
         [Required]
-        public DateTime EndDate { get; set; }
+        public DateTime EndDate { get; set; } = DateTime.UtcNow.ToLocalTime().AddDays(7);
     }
 }

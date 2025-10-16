@@ -27,20 +27,20 @@ namespace AuctionsWebsitePragmatic.Controllers
         {
             if (!ModelState.IsValid)
             {
-                //return View(model);
-                return BadRequest(ModelState);
+                return View(model);
+                //return BadRequest(ModelState);
             }
 
             var (success, error) = await _authService.RegisterAsync(model);
             if (!success)
             {
                 ModelState.AddModelError(string.Empty, error);
-                //return View(model);
-                return BadRequest(error);
+                return View(model);
+                //return BadRequest(error);
             }
 
-            //return RedirectToAction(nameof(Login));
-            return Ok(new { message = "User registered successfully", userId = model.Username });
+            return RedirectToAction(nameof(Login));
+            //return Ok(new { message = "User registered successfully", userId = model.Username });
         }
 
         [HttpGet]
@@ -55,16 +55,16 @@ namespace AuctionsWebsitePragmatic.Controllers
         {
             if (!ModelState.IsValid)
             {
-                //return View(model);
-                return BadRequest(ModelState);
+                return View(model);
+                //return BadRequest(ModelState);
             }
 
             var (success, error, user) = await _authService.ValidateLoginAsync(model);
             if (!success || user == null)
             {
                 ModelState.AddModelError(string.Empty, error ?? "Invalid credentials.");
-                //return View(model);
-                return BadRequest(error);
+                return View(model);
+                //return BadRequest(error);
             }
 
             var claims = new List<Claim>
@@ -79,17 +79,20 @@ namespace AuctionsWebsitePragmatic.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl)) return Redirect(returnUrl);
-            //return RedirectToAction("Index", "Home");
-            return Ok(new { message = "User logged in successfully", userId = model.Email });
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            return RedirectToAction("Index", "Home");
+            //return Ok(new { message = "User logged in successfully", userId = model.Email });
         }
 
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            //return RedirectToAction(nameof(Login));
-            return Ok(new { message = "User logged out successfully"});
+            return RedirectToAction(nameof(Login));
+            //return Ok(new { message = "User logged out successfully"});
         }
     }
 }

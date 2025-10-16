@@ -1,0 +1,42 @@
+﻿@model AuctionsWebsitePragmatic.ViewModels.Auction.AuctionCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Auction";
+}
+
+<h2 class="text-center mt-4">Create a New Auction</h2>
+
+<form asp-action="Create" method="post" class="w-50 mx-auto mt-4">
+    <div class="form-group mb-3">
+        <label asp-for="Title"></label>
+        <input asp-for="Title" class="form-control" />
+        <span asp-validation-for="Title" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description" class="form-control"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="StartPrice"></label>
+        <input asp-for="StartPrice" class="form-control" />
+        <span asp-validation-for="StartPrice" class="text-danger"></span>
+    </div>
+
+    <div class="form-group mb-3">
+        <label asp-for="EndDate"></label>
+        <input asp-for="EndDate" type="datetime-local" class="form-control" />
+        <span asp-validation-for="EndDate" class="text-danger"></span>
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+        <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Auctions</a>
+        <button type="submit" class="btn btn-success">Create Auction</button>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

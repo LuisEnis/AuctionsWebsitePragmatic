@@ -21,8 +21,8 @@ namespace AuctionsWebsitePragmatic.Controllers
         {
             if (!ModelState.IsValid)
             {
-                //return RedirectToAction("Details", "Auction", new { id = model.AuctionId });
-                return BadRequest(ModelState);
+                return RedirectToAction("Details", "Auction", new { id = model.AuctionId });
+                //return BadRequest(ModelState);
             }
 
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -33,8 +33,8 @@ namespace AuctionsWebsitePragmatic.Controllers
                 TempData["BidError"] = error;
             }
 
-            //return RedirectToAction("Details", "Auction", new { id = model.AuctionId });
-            return Ok(new { message = "Bid placed successfully", model });
+            return RedirectToAction("Details", "Auction", new { id = model.AuctionId });
+            //return Ok(new { message = "Bid placed successfully", model });
         }
     }
 }

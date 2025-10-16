@@ -28,10 +28,11 @@ namespace AuctionsWebsitePragmatic.Controllers
                 StartPrice = a.StartPrice,
                 CurrentPrice = a.CurrentPrice,
                 EndDate = a.EndDate,
-                SellerUsername = a.PostedBy?.Username ?? "Unknown"
+                SellerUsername = a.PostedBy?.Username ?? "Unknown",
+                PostedById = a.PostedById
             }).ToList();
-            //return View(auctionListViewModel);
-            return Ok(new { message = "Auctions", auctionListViewModel });
+            return View(auctionListViewModel);
+            //return Ok(new { message = "Auctions", auctionListViewModel });
         }
     }
 }

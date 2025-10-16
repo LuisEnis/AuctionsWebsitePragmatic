@@ -24,8 +24,8 @@ namespace AuctionsWebsitePragmatic.Controllers
             var auction = await _auctionService.GetByIdAsync(id);
             if (auction == null)
             {
-                //return NotFound();
-                return BadRequest("auction is null");
+                return NotFound();
+                //return BadRequest("auction is null");
             }
 
             var vm = new AuctionDetailsViewModel
@@ -40,8 +40,8 @@ namespace AuctionsWebsitePragmatic.Controllers
                 Bids = (auction.Bids ?? Enumerable.Empty<Bid>()).Select(b => new BidViewModel { Amount = b.Amount, AuctionId = b.AuctionId }).ToList()
             };
 
-            //return View(vm);
-            return Ok(new { message = "Auction Details:", vm });
+            return View(vm);
+            //return Ok(new { message = "Auction Details:", vm });
         }
 
         [HttpGet]
@@ -54,8 +54,8 @@ namespace AuctionsWebsitePragmatic.Controllers
         {
             if (!ModelState.IsValid)
             {
-                //return View(model);
-                return BadRequest(ModelState);
+                return View(model);
+                //return BadRequest(ModelState);
             }
 
             var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
@@ -65,13 +65,13 @@ namespace AuctionsWebsitePragmatic.Controllers
                 Description = model.Description,
                 StartPrice = model.StartPrice,
                 CurrentPrice = model.StartPrice,
-                EndDate = model.EndDate,
+                EndDate = model.EndDate.ToUniversalTime(),
                 PostedById = userId
             };
 
             await _auctionService.CreateAuctionAsync(auction);
-            //return RedirectToAction("Index", "Home");
-            return Ok(new { message = "Auction created successfully", auction });
+            return RedirectToAction("Index", "Home");
+            //return Ok(new { message = "Auction created successfully", auction });
         }
     }
 }
