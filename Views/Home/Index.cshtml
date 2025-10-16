@@ -22,7 +22,6 @@
                     <th>Current Price</th>
                     <th>Ends On</th>
                     <th>Seller</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,18 +35,8 @@
                         </td>
                         <td>@auction.Description</td>
                         <td>$@auction.CurrentPrice</td>
-                        <td>@auction.EndDate.ToLocalTime().ToString("g")</td>
+                        <td>@(auction.EndDate.AddHours(2).ToString("g"))</td>
                         <td>@auction.SellerUsername</td>
-                        <td>
-                            @if (auction.PostedById != int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)))
-                            {
-                                <a asp-controller="Bid" asp-action="PlaceBid" asp-route-auctionId="@auction.Id" class="btn btn-sm btn-primary">Bid</a>
-                            }
-                            else
-                            {
-                                <span class="text-muted">Your auction(You cannot bid)</span>
-                            }
-                        </td>
                     </tr>
                 }
             </tbody>

@@ -65,7 +65,7 @@ namespace AuctionsWebsitePragmatic.Controllers
                 Description = model.Description,
                 StartPrice = model.StartPrice,
                 CurrentPrice = model.StartPrice,
-                EndDate = model.EndDate.ToUniversalTime(),
+                EndDate = model.EndDate.AddHours(-2).ToUniversalTime(),
                 PostedById = userId
             };
 

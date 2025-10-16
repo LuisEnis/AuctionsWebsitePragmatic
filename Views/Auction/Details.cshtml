@@ -9,7 +9,7 @@
     <p>@Model.Description</p>
     <p><strong>Current Price:</strong> $@Model.CurrentPrice</p>
     <p><strong>Seller:</strong> @Model.PostedByUsername</p>
-    <p><strong>Ends On:</strong> @Model.EndDate.ToLocalTime().ToString("g")</p>
+    <p><strong>Ends On:</strong> @(Model.EndDate.AddHours(2).ToString("g"))</p>
 
     <hr />
     <h4>Bids</h4>
@@ -29,6 +29,28 @@
                 </li>
             }
         </ul>
+    }
+
+    @if (Model.PostedByUsername != User.Identity.Name)
+    {
+        <hr />
+        <h4>Place Your Bid</h4>
+
+        @if (TempData["BidError"] != null)
+        {
+            <div class="alert alert-danger">@TempData["BidError"]</div>
+        }
+
+        <form asp-controller="Bid" asp-action="PlaceBid" method="post" class="mb-3">
+            <input type="hidden" name="AuctionId" value="@Model.Id" />
+
+            <div class="mb-3">
+                <label for="Amount" class="form-label">Bid Amount</label>
+                <input type="number" step="0.01" min="@Model.CurrentPrice + 0.01M" class="form-control" id="Amount" name="Amount" placeholder="Enter your bid" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Place Bid</button>
+        </form>
     }
 
     <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Back to Auctions</a>
