@@ -1,6 +1,7 @@
 ﻿using AuctionsWebsitePragmatic.Models;
 using AuctionsWebsitePragmatic.Repositories.Interfaces;
 using AuctionsWebsitePragmatic.Services.Interfaces;
+using System.Reflection;
 
 namespace AuctionsWebsitePragmatic.Services
 {
@@ -55,21 +56,27 @@ namespace AuctionsWebsitePragmatic.Services
 
         public async Task CloseExpiredAuctionsAsync()
         {
-            var now = DateTime.UtcNow;
+            var now = DateTime.UtcNow.AddMinutes(1);
+            _logger.LogInformation("CloseExpiredAuctionsAsync running at {Time}", DateTime.UtcNow);
             var active = (await _auctionRepo.GetActiveAuctionsAsync()).ToList();
             var toClose = active.Where(a => a.EndDate <= now && !a.IsClosed).ToList();
+            _logger.LogInformation("Auctions to close: {Count}", toClose.Count());
 
             foreach (var auction in toClose)
             {
+                _logger.LogInformation("Closing auction {AuctionId}", auction.Id);
                 try
                 {
                     var highest = await _bidRepo.GetHighestBidForAuctionAsync(auction.Id);
+                    _logger.LogInformation("Highest bid: {Amount} by {BidderId}", highest?.Amount, highest?.BidderId);
                     auction.IsClosed = true;
 
                     if (highest != null)
                     {
                         var winner = await _userRepo.GetByIdAsync(highest.BidderId);
+                        _logger.LogInformation("Winner wallet before: {Wallet}", winner?.Wallet);
                         var seller = await _userRepo.GetByIdAsync(auction.PostedById);
+                        _logger.LogInformation("Seller wallet before: {Wallet}", seller?.Wallet);
 
                         if (winner != null && seller != null)
                         {
